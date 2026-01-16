@@ -17,6 +17,12 @@ import org.jetbrains.annotations.*;
 public class KindlingEntityRenderer extends MobRenderer<KindlingEntity, KindlingEntityModel> {
 	
 	public static final ResourceLocation SADDLE_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/saddle.png");
+	public static final ResourceLocation DEFAULT_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/kindling.png");
+	public static final ResourceLocation ANGRY_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/kindling_angry.png");
+	public static final ResourceLocation ANGRY_CLIPPED_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/kindling_angry_clipped.png");
+	public static final ResourceLocation BLINK_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/kindling_blink.png");
+	public static final ResourceLocation BLINK_CLIPPED_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/kindling_blink_clipped.png");
+	public static final ResourceLocation CLIPPED_TEXTURE = SpectrumCommon.locate("textures/entity/kindling/kindling_clipped.png");
 	
 	public KindlingEntityRenderer(EntityRendererProvider.Context context) {
 		super(context, new KindlingEntityModel(context.bakeLayer(SpectrumModelLayers.KINDLING)), 0.7F);
@@ -28,21 +34,23 @@ public class KindlingEntityRenderer extends MobRenderer<KindlingEntity, Kindling
 	public void render(KindlingEntity entity, float yaw, float tickDelta, PoseStack poseStack, MultiBufferSource vertexConsumerProvider, int light) {
 		super.render(entity, yaw, tickDelta, poseStack, vertexConsumerProvider, light);
 	}
+
+	// Removed Variant texture compat for Connector compat
 	
 	@Override
 	public ResourceLocation getTextureLocation(@NotNull KindlingEntity entity) {
-		KindlingVariant variant = entity.getKindlingVariant().value();
+		// KindlingVariant variant = entity.getKindlingVariant().value();
 		boolean isClipped = entity.isClipped();
 		if (entity.getRemainingPersistentAngerTime() > 0) {
-			return isClipped ? variant.getAngryClippedTexture() : variant.getAngryTexture();
+			return isClipped ? ANGRY_CLIPPED_TEXTURE : ANGRY_TEXTURE;
 		}
 		
 		boolean isBlinking = (entity.getId() - entity.level().getGameTime()) % 120 == 0; // based on the entities' id, so not all blink at the same time
 		if (isClipped) {
-			return isBlinking ? variant.getBlinkingClippedTexture() : variant.getClippedTexture();
+			return isBlinking ? BLINK_CLIPPED_TEXTURE : CLIPPED_TEXTURE;
 		}
 		
-		return isBlinking ? variant.getBlinkingTexture() : variant.getDefaultTexture();
+		return isBlinking ? BLINK_TEXTURE :DEFAULT_TEXTURE;
 	}
 
 	@Override
